@@ -1,6 +1,7 @@
 plugins {
     // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
     id 'java-gradle-plugin'
+    id 'maven-publish'
 }
 
 repositories {
@@ -8,7 +9,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.12'
 }
 
 gradlePlugin {
@@ -16,7 +17,7 @@ gradlePlugin {
     plugins {
         greeting {
             id = 'codehygiene.secrets'
-            implementationClass = 'codehygiene.CodehygienePlugin'
+            implementationClass = 'codehygiene.CodeHygienePlugin'
         }
     }
 }
@@ -37,8 +38,4 @@ tasks.register('functionalTest', Test) {
 
 check {
     dependsOn(tasks.functionalTest)
-}
-
-leakingTokens{
-    allowlist = "BUILD_USER_PASSWORD"
 }
