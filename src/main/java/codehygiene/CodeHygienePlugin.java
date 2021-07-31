@@ -2,19 +2,21 @@ package codehygiene;
 
 import codehygiene.exception.CodeHygieneException;
 import codehygiene.extn.CheckExposedSecrets;
-import codehygiene.util.ConstantsAndFunctions;
 import codehygiene.util.FileLinesTuple;
 import org.apache.tools.ant.DirectoryScanner;
 import org.gradle.api.GradleException;
-import org.gradle.api.Project;
 import org.gradle.api.Plugin;
+import org.gradle.api.Project;
 import org.gradle.tooling.GradleConnectionException;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,6 +31,11 @@ public class CodeHygienePlugin implements Plugin<Project> {
 
 
 	public void apply(Project project) {
+		exposedSecretsTask(project);
+
+	}
+
+	private void exposedSecretsTask(Project project) {
 		CheckExposedSecrets exposedSecretsExtn = project.getExtensions().create("exposedSecretsCheck", CheckExposedSecrets.class);
 
 		project.getTasks().register("exposed_secrets", task -> {
@@ -62,7 +69,7 @@ public class CodeHygienePlugin implements Plugin<Project> {
 			out.println("no suspect files");
 			return;
 		}
-		out.println("\n Following files contain suspected lines with plain text secrets");
+		out.println("\n Following files contain lines with suspect plain text secrets");
 		fileLinesTuples.stream().forEach((out::println));
 		throw new GradleException("Some files contain plain text secrets. Please check build log");
 	}
